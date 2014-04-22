@@ -1,4 +1,5 @@
 import os
+import time
 
 from nose.tools import raises
 from requests.exceptions import HTTPError
@@ -13,7 +14,9 @@ sauce_key = os.environ['SAUCE_ACCESS_KEY']
 def create_session():
     sauce_exec = 'http://{0}:{1}@ondemand.saucelabs.com/wd/hub'
     sauce_url = sauce_exec.format(sauce_user, sauce_key)
+    ctime = time.time()
     driver = webdriver.Remote(sauce_url, webdriver.DesiredCapabilities.FIREFOX)
+    driver.ctime = ctime
     return driver
 
 
@@ -47,7 +50,21 @@ class TestJobs(object):
 
     def test_job_skip(self):
         resp = self.sauce.jobs.list_jobs(skip=1)
-        assert resp[0]['id'] != self.driver.session_id
+        comp_time = time.time()
+        try:
+            assert resp[0]['id'] != self.driver.session_id, "Did not skip."
+        except AssertionError:
+            # handle case where a job is created after the job checked above
+            resp = self.sauce.jobs.list_jobs(full=True)
+            if resp[0]['id'] == self.driver.session_id:
+                raise
+            for idx, job in enumerate(resp):
+                if job['id'] == self.driver.session_id:
+                    last_job = resp[idx - 1]
+                    break
+            if comp_time > last_job['creation_time'] > self.driver.ctime:
+                return
+            raise
 
     def test_job_details(self):
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
