@@ -1,7 +1,6 @@
 import os
 import time
 
-from nose.tools import raises
 from requests.exceptions import HTTPError
 from selenium import webdriver
 
@@ -115,6 +114,52 @@ class TestJobs(object):
         assert resp['custom-data'] == custom_data, "Custom data from API wrong."
 
 
+class TestJobAssets(object):
+    '''
+    Test listing and downloading job assets.
+
+    Requires the job to be finished before getting assets.
+    '''
+
+    @classmethod
+    def setUpClass(cls):
+        cls.driver = create_session()
+        cls.sauce = sauce.Sauce(sauce_user, sauce_key)
+        cls.session = cls.driver.session_id
+        cls.sauce.jobs.stop_job(cls.session)
+
+    def test_job_list_assets(self):
+        resp = self.sauce.jobs.list_job_assets(self.session)
+        assert 'sauce-log' in resp
+
+    def test_job_download_asset(self):
+        resp = self.sauce.jobs.download_job_asset(self.session,
+                                                  'selenium-server.log')
+        assert resp
+
+
+class TestJobAssetsDelete(object):
+    '''
+    Test deleting job assets. Has to have it's own session to test this to
+    be process-safe.
+    '''
+
+    def setUp(self):
+        self.driver = create_session()
+        self.sauce = sauce.Sauce(sauce_user, sauce_key)
+        self.sauce.jobs.stop_job(self.driver.session_id)
+
+    def test_job_asssets_delete(self):
+        self.sauce.jobs.delete_job_assets(self.driver.session_id)
+        try:
+            self.sauce.jobs.download_job_asset(self.driver.session_id,
+                                               'selenium-server.log')
+        except HTTPError as err:
+            if err.message == '404 Client Error: Not Found':
+                return
+            raise
+
+
 class TestJobStopDelete(object):
     '''
     Test stopping a job and deleting a job.
@@ -129,63 +174,12 @@ class TestJobStopDelete(object):
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
         assert resp['error'] == 'User terminated', "Job not stopped."
 
-    @raises(HTTPError)
     def test_job_delete(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
         self.sauce.jobs.delete_job(self.driver.session_id)
-        self.sauce.jobs.get_job_details(self.driver.session_id)
-
-# 	def test_job_from():
-# 		# test date 'from'
-
-# 	def test_job_to():
-# 		# test date 'to'
-
-# 	def test_job_to_from():
-# 		# duh
-
-# 	def test_job_csv():
-# 		#test csv job info
-
-# 	def test_job_information():
-# 		#get job information for job we set up
-
-# 	def test_job_update():
-# 		# update some params
-# 		# verify they changed
-
-# class TestJobsStopDelete(object):
-
-#     def setUp(self):
-#         self.driver = create_session()
-
-#     def tearDown(self):
-#         self.driver.quit()
-
-# # 	def test_job_delete():
-# # 		# create a job
-# # 		# delteeted
-# # 		# del... taco?
-
-#     def test_job_stop(self):
-#         sauce.stop_job(self.driver.id)
-
-
-# class JobsAssetsTest():
-# 	'''
-# 	Test Jobs assets.
-# 	'''
-
-# 	def setUpClass
-# 	def tearDownClass
-	
-# 	def test_list_job_assets():
-# 		# run a job
-# 		# get a list of assets
-
-# 	def test_download_job_assets():
-# 		# yep, download bitches
-
-# 	def remove_job_assets():
-# 		# same song and dance
-
+        try:
+            self.sauce.jobs.get_job_details(self.driver.session_id)
+        except HTTPError as err:
+            if err.message == '404 Client Error: Not Found':
+                return
+            raise

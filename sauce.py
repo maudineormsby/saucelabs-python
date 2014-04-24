@@ -9,13 +9,20 @@ class Sauce(object):
         self.user = sauce_user
         self.key = sauce_key
         self.jobs = Jobs(self)
+        self.base_url = 'https://{0}:{1}@saucelabs.com'.format(
+            self.user, self.key)
 
     def request(self, method, rel_url, data=None, params=None):
-        base_url = 'https://{0}:{1}@saucelabs.com'.format(self.user, self.key)
-        url = base_url + rel_url
+        url = self.base_url + rel_url
         resp = requests.request(method, url, data=data, params=params)
         resp.raise_for_status()
         return resp.json()
+
+    def download(self, rel_url):
+        url = self.base_url + rel_url
+        resp = requests.get(url)
+        resp.raise_for_status()
+        return resp.content
 
 
 class Jobs(object):
@@ -63,4 +70,21 @@ class Jobs(object):
 
     def delete_job(self, session):
         rel_url = '/rest/v1/{0}/jobs/{1}'.format(self.sauce.user, session)
+        return self.sauce.request('DELETE', rel_url)
+
+    def list_job_assets(self, session):
+        rel_url = '/rest/v1/{0}/jobs/{1}/assets'.format(self.sauce.user, session)
+        return self.sauce.request('GET', rel_url)
+
+    def download_job_asset(self, session, asset):
+        '''
+        Download job asset from sauce. Returns raw file content which needs
+        to be written to a file.
+        '''
+        rel_url = '/rest/v1/{0}/jobs/{1}/assets/{2}'.format(
+            self.sauce.user, session, asset)
+        return self.sauce.download(rel_url)
+
+    def delete_job_assets(self, session):
+        rel_url = '/rest/v1/{0}/jobs/{1}/assets'.format(self.sauce.user, session)
         return self.sauce.request('DELETE', rel_url)
