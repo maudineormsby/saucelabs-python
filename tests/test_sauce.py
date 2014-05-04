@@ -1,7 +1,10 @@
 import os
 import tempfile
 import time
-import unittest
+try:
+    import unittest2 as unittest
+except ImportError:
+    import unittest
 
 from requests.exceptions import HTTPError
 from selenium import webdriver
