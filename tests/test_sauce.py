@@ -1,5 +1,7 @@
 import os
+import tempfile
 import time
+import unittest
 
 from requests.exceptions import HTTPError
 from selenium import webdriver
@@ -19,7 +21,7 @@ def create_session():
     return driver
 
 
-class TestJobs(object):
+class TestJobs(unittest.TestCase):
     '''
     Test the Jobs API client.
     '''
@@ -114,7 +116,7 @@ class TestJobs(object):
         assert resp['custom-data'] == custom_data, "Custom data from API wrong."
 
 
-class TestJobAssets(object):
+class TestJobAssets(unittest.TestCase):
     '''
     Test listing and downloading job assets.
 
@@ -133,12 +135,15 @@ class TestJobAssets(object):
         assert 'sauce-log' in resp
 
     def test_job_download_asset(self):
-        resp = self.sauce.jobs.download_job_asset(self.session,
-                                                  'selenium-server.log')
-        assert resp
+        with tempfile.TemporaryFile() as tmpfile:
+            tmpfile.write(self.sauce.jobs.download_job_asset(
+                self.session, 'selenium-server.log')
+            tmpfile.seek(0)
+            self.assertIn('org.openqa.grid.selenium.GridLauncher', tmpfile.read(),
+                          "File did not download properly.")
 
 
-class TestJobAssetsDelete(object):
+class TestJobAssetsDelete(unittest.TestCase):
     '''
     Test deleting job assets. Has to have it's own session to test this to
     be process-safe.
@@ -160,7 +165,7 @@ class TestJobAssetsDelete(object):
             raise
 
 
-class TestJobStopDelete(object):
+class TestJobStopDelete(unittest.TestCase):
     '''
     Test stopping a job and deleting a job.
     '''
