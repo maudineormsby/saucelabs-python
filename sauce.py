@@ -78,8 +78,14 @@ class Jobs(object):
 
     def download_job_asset(self, session, asset):
         """
-        Download job asset from sauce. Returns raw file content which needs
-        to be written to a file.
+        Download job asset from sauce.
+
+        Args:
+          session: session id for sauce job.
+          asset: name of asset to download.
+
+        Returns:
+          The contents of the asset from the server, as a bytestring.
         """
         rel_url = '/rest/v1/{0}/jobs/{1}/assets/{2}'.format(
             self.sauce.user, session, asset)
