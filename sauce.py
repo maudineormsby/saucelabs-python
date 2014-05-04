@@ -50,17 +50,17 @@ class Jobs(object):
         rel_url = '/rest/v1/{0}/jobs/{1}'.format(self.sauce.user, session)
         payload = {}
         if name:
-            payload["name"] = name
+            payload['name'] = name
         if tags:
-            payload["tags"] = tags
+            payload['tags'] = tags
         if public is not None:
-            payload["public"] = public
+            payload['public'] = public
         if passed is not None:
-            payload["passed"] = passed
+            payload['passed'] = passed
         if build:
-            payload["build"] = build
+            payload['build'] = build
         if custom_data:
-            payload["custom-data"] = custom_data
+            payload['custom-data'] = custom_data
         data = json.dumps(payload)
         return self.sauce.request('PUT', rel_url, data)
 
@@ -77,10 +77,10 @@ class Jobs(object):
         return self.sauce.request('GET', rel_url)
 
     def download_job_asset(self, session, asset):
-        '''
+        """
         Download job asset from sauce. Returns raw file content which needs
         to be written to a file.
-        '''
+        """
         rel_url = '/rest/v1/{0}/jobs/{1}/assets/{2}'.format(
             self.sauce.user, session, asset)
         return self.sauce.download(rel_url)

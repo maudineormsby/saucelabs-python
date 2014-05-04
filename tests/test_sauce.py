@@ -22,9 +22,9 @@ def create_session():
 
 
 class TestJobs(unittest.TestCase):
-    '''
+    """
     Test the Jobs API client.
-    '''
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -38,22 +38,22 @@ class TestJobs(unittest.TestCase):
     def test_job_ids(self):
         resp = self.sauce.jobs.list_jobs()
         for job in resp:
-            assert job['id'], "No response for GET job ids."
+            assert job['id'], 'No response for GET job ids.'
 
     def test_job_id_limit(self):
         resp = self.sauce.jobs.list_jobs(limit=1)
-        assert len(resp) == 1, "Got too many jobs from API."
+        assert len(resp) == 1, 'Got too many jobs from API.'
 
     def test_job_full(self):
         resp = self.sauce.jobs.list_jobs(full=True)
         for res in resp:
-            assert res['creation_time'], "Did not get full data for job."
+            assert res['creation_time'], 'Did not get full data for job.'
 
     def test_job_skip(self):
         resp = self.sauce.jobs.list_jobs(skip=1)
         comp_time = time.time()
         try:
-            assert resp[0]['id'] != self.driver.session_id, "Did not skip."
+            assert resp[0]['id'] != self.driver.session_id, 'Did not skip.'
         except AssertionError:
             # handle case where a job is created after the job checked above
             resp = self.sauce.jobs.list_jobs(full=True)
@@ -69,43 +69,43 @@ class TestJobs(unittest.TestCase):
 
     def test_job_details(self):
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['creation_time'], "Did not get full data for job."
+        assert resp['creation_time'], 'Did not get full data for job.'
 
     def test_job_update_name(self):
-        name = "Test Job update name"
+        name = 'Test Job update name'
         self.sauce.jobs.update_job(self.driver.session_id, name=name)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['name'] == name, "Name from API wrong."
+        assert resp['name'] == name, 'Name from API wrong.'
 
     def test_job_update_tags(self):
         tags = ['test', 'job', 'update']
         self.sauce.jobs.update_job(self.driver.session_id, tags=tags)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['tags'] == tags, "Tags from API wrong."
+        assert resp['tags'] == tags, 'Tags from API wrong.'
 
     def test_job_update_public_bool(self):
         public = True
         self.sauce.jobs.update_job(self.driver.session_id, public=public)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['public'] == "public", "Public setting from API wrong."
+        assert resp['public'] == 'public', 'Public setting from API wrong.'
 
     def test_job_update_public_str(self):
-        public = "public"
+        public = 'public'
         self.sauce.jobs.update_job(self.driver.session_id, public=public)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['public'] == public, "Public setting from API wrong."
+        assert resp['public'] == public, 'Public setting from API wrong.'
 
     def test_job_update_passed(self):
         passed = True
         self.sauce.jobs.update_job(self.driver.session_id, passed=passed)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['passed'] == passed, "Passed value from API wrong."
+        assert resp['passed'] == passed, 'Passed value from API wrong.'
 
     def test_job_update_build(self):
-        build = "test_build_x"
+        build = 'test_build_x'
         self.sauce.jobs.update_job(self.driver.session_id, build=build)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['build'] == build, "Build value from API wrong."
+        assert resp['build'] == build, 'Build value from API wrong.'
 
     def test_job_update_custom_data(self):
         custom_data = {'custom': 'data',
@@ -113,15 +113,15 @@ class TestJobs(unittest.TestCase):
                        'id-number': 4452231}
         self.sauce.jobs.update_job(self.driver.session_id, custom_data=custom_data)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['custom-data'] == custom_data, "Custom data from API wrong."
+        assert resp['custom-data'] == custom_data, 'Custom data from API wrong.'
 
 
 class TestJobAssets(unittest.TestCase):
-    '''
+    """
     Test listing and downloading job assets.
 
     Requires the job to be finished before getting assets.
-    '''
+    """
 
     @classmethod
     def setUpClass(cls):
@@ -137,17 +137,17 @@ class TestJobAssets(unittest.TestCase):
     def test_job_download_asset(self):
         with tempfile.TemporaryFile() as tmpfile:
             tmpfile.write(self.sauce.jobs.download_job_asset(
-                self.session, 'selenium-server.log')
+                self.session, 'selenium-server.log'))
             tmpfile.seek(0)
             self.assertIn('org.openqa.grid.selenium.GridLauncher', tmpfile.read(),
-                          "File did not download properly.")
+                          'File did not download properly.')
 
 
 class TestJobAssetsDelete(unittest.TestCase):
-    '''
+    """
     Test deleting job assets. Has to have it's own session to test this to
     be process-safe.
-    '''
+    """
 
     def setUp(self):
         self.driver = create_session()
@@ -166,9 +166,9 @@ class TestJobAssetsDelete(unittest.TestCase):
 
 
 class TestJobStopDelete(unittest.TestCase):
-    '''
+    """
     Test stopping a job and deleting a job.
-    '''
+    """
 
     def setUp(self):
         self.driver = create_session()
@@ -177,7 +177,7 @@ class TestJobStopDelete(unittest.TestCase):
     def test_job_stop(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['error'] == 'User terminated', "Job not stopped."
+        assert resp['error'] == 'User terminated', 'Job not stopped.'
 
     def test_job_delete(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
