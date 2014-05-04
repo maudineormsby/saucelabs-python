@@ -83,6 +83,14 @@ class TestJobs(unittest.TestCase):
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
         assert resp['tags'] == tags, 'Tags from API wrong.'
 
+    def test_job_clear_tags(self):
+        tags = ['test', 'job', 'update']
+        self.sauce.jobs.update_job(self.driver.session_id, tags=tags)
+        self.sauce.jobs.get_job_details(self.driver.session_id)
+        tags = []
+        resp = self.sauce.jobs.update_job(self.driver.session_id, tags=tags)
+        self.assertEqual(resp['tags'], tags, 'Tags were not cleared.')
+
     def test_job_update_public_bool(self):
         public = True
         self.sauce.jobs.update_job(self.driver.session_id, public=public)

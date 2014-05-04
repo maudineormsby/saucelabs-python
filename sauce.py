@@ -51,7 +51,7 @@ class Jobs(object):
         payload = {}
         if name:
             payload['name'] = name
-        if tags:
+        if tags is not False:
             payload['tags'] = tags
         if public is not None:
             payload['public'] = public
