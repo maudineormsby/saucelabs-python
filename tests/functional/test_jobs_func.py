@@ -25,10 +25,6 @@ def create_session():
     return driver
 
 
-class FileNotDeletedError(Exception):
-    """Raised when a file should have been deleted but was present"""
-
-
 class TestJobs(unittest.TestCase):
     """
     Test the Jobs API client.
@@ -177,15 +173,12 @@ class TestJobAssetsDelete(unittest.TestCase):
         self.sauce = sauce.Sauce(sauce_user, sauce_key)
         self.sauce.jobs.stop_job(self.driver.session_id)
 
-    def test_job_asssets_delete(self):
+    def test_job_assets_delete(self):
         self.sauce.jobs.delete_job_assets(self.driver.session_id)
-        try:
+        with self.assertRaises(HTTPError) as err_info:
             self.sauce.jobs.download_job_asset(self.driver.session_id,
                                                'selenium-server.log')
-        except HTTPError as err:
-            self.assertEqual(err.response.status_code, 404)
-            return
-        raise FileNotDeletedError('Some job assets were not deleted.')
+            self.assertEqual(err_info.response.status_code, 404)
 
 
 class TestJobStopDelete(unittest.TestCase):
@@ -205,9 +198,6 @@ class TestJobStopDelete(unittest.TestCase):
     def test_job_delete(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
         self.sauce.jobs.delete_job(self.driver.session_id)
-        try:
+        with self.assertRaises(HTTPError) as err_info:
             self.sauce.jobs.get_job_details(self.driver.session_id)
-        except HTTPError as err:
-            if err.message == '404 Client Error: Not Found':
-                return
-            raise
+            self.assertEqual(err_info.response.status_code, 404)
