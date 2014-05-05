@@ -6,7 +6,21 @@ class Jobs(object):
     def __init__(self, sauce):
         self.sauce = sauce
 
-    def list_jobs(self, limit=False, full=False, skip=False):
+    def list_jobs(self, full=False, limit=False, skip=False):
+        """
+        List all jobs for the account.
+
+        Uses the saucelabs username and access key in self.sauce.
+
+        Args:
+          full: return all job details not only job id.
+          limit: max number of jobs to return.
+          skip: number of jobs to skip
+
+        Returns:
+          List of JSON objects containing id of jobs (or all details if
+          full=True).
+        """
         payload = {}
         if limit:
             payload['limit'] = limit
@@ -18,11 +32,20 @@ class Jobs(object):
         return self.sauce.request('GET', rel_url, params=payload)
 
     def get_job_details(self, session):
+        """
+        Get details for the specified job.
+
+        Args:
+          session: the session id of the job to get details for.
+
+        Returns:
+          JSON object containing job information.
+        """
         rel_url = '/rest/v1/{0}/jobs/{1}'.format(self.sauce.user, session)
         return self.sauce.request('GET', rel_url)
 
-    def update_job(self, session, name=False, tags=False, public=None, passed=None,
-                   build=False, custom_data=False):
+    def update_job(self, session, build=False, custom_data=False, name=False,
+                   passed=None, public=None, tags=False):
         rel_url = '/rest/v1/{0}/jobs/{1}'.format(self.sauce.user, session)
         payload = {}
         if name:
