@@ -45,3 +45,39 @@ class Sauce(object):
         with open(user_file_path) as upload_data:
             headers = {'Content-Type': 'application/octet-stream'}
             requests.post(url, data=upload_data, headers=headers)
+
+    def status(self):
+        """
+        Returns the status of the Saucelabs service.
+        """
+        info_url = '/rest/v1/info/status'
+        return self.request('GET', info_url)
+
+    def browsers(self, se_version='all'):
+        """
+        Returns the list of browsers supported for a given version of selenium.
+
+        Args:
+          se_version: The version of selenium to use to list compatible
+            browsers. Should be 'selenium-rc' or 'webdriver'.
+
+        Returns:
+          List of supported browser, version, and os combinations.
+
+        Raises:
+          NameError: If se_version is an unrecognized selenium version.
+        """
+        browser_url = '/rest/v1/info/browsers/'
+        if se_version in ('all', 'selenium-rc', 'webdriver'):
+            browser_url = ''.join((browser_url, se_version))
+        else:
+            raise ValueError(
+                'Unsupported Selenium version: {0}'.format(se_version))
+        return self.request('GET', browser_url)
+
+    def counter(self):
+        """
+        Returns the number of jobs run on Saucelabs service.
+        """
+        counter_url = '/rest/v1/info/counter'
+        return self.request('GET', counter_url)

@@ -1,4 +1,3 @@
-import os
 import tempfile
 import time
 try:
@@ -7,23 +6,9 @@ except ImportError:
     import unittest
 
 from requests.exceptions import HTTPError
-from selenium import webdriver
 
-from sauce import sauce
-
-sauce_user = os.environ['SAUCE_USERNAME']
-sauce_key = os.environ['SAUCE_ACCESS_KEY']
-
-
-def create_session():
-    sauce_exec = 'http://{0}:{1}@ondemand.saucelabs.com/wd/hub'
-    sauce_url = sauce_exec.format(sauce_user, sauce_key)
-    ctime = time.time()
-    driver = webdriver.Remote(
-        sauce_url, webdriver.DesiredCapabilities.FIREFOX)
-    driver.ctime = ctime
-    return driver
-
+from .helpers import sauce_helpers as helpers
+import sauce
 
 class TestJobs(unittest.TestCase):
     """
@@ -32,8 +17,8 @@ class TestJobs(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.driver = create_session()
-        cls.sauce = sauce.Sauce(sauce_user, sauce_key)
+        cls.driver = helpers.create_session()
+        cls.sauce = sauce.Sauce(helpers.sauce_user, helpers.sauce_key)
 
     @classmethod
     def tearDownClass(cls):
@@ -144,8 +129,8 @@ class TestJobAssets(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.driver = create_session()
-        cls.sauce = sauce.Sauce(sauce_user, sauce_key)
+        cls.driver = helpers.create_session()
+        cls.sauce = sauce.Sauce(helpers.sauce_user, helpers.sauce_key)
         cls.session = cls.driver.session_id
         cls.sauce.jobs.stop_job(cls.session)
 
@@ -169,8 +154,8 @@ class TestJobAssetsDelete(unittest.TestCase):
     """
 
     def setUp(self):
-        self.driver = create_session()
-        self.sauce = sauce.Sauce(sauce_user, sauce_key)
+        self.driver = helpers.create_session()
+        self.sauce = sauce.Sauce(helpers.sauce_user, helpers.sauce_key)
         self.sauce.jobs.stop_job(self.driver.session_id)
 
     def test_job_assets_delete(self):
@@ -187,8 +172,8 @@ class TestJobStopDelete(unittest.TestCase):
     """
 
     def setUp(self):
-        self.driver = create_session()
-        self.sauce = sauce.Sauce(sauce_user, sauce_key)
+        self.driver = helpers.create_session()
+        self.sauce = sauce.Sauce(helpers.sauce_user, helpers.sauce_key)
 
     def test_job_stop(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
