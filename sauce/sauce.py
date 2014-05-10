@@ -3,7 +3,7 @@ import os
 import requests
 
 import jobs
-
+import tunnels
 
 class Sauce(object):
 
@@ -11,6 +11,7 @@ class Sauce(object):
         self.user = sauce_user
         self.key = sauce_key
         self.jobs = jobs.Jobs(self)
+        self.tunnels = tunnels.Tunnels(self)
         self.base_url = 'https://{0}:{1}@saucelabs.com'.format(
             self.user, self.key)
 
