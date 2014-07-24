@@ -1,14 +1,14 @@
 language: python
 python:
-    - "2.6"
-    - "2.7"
+  - "2.6"
+  - "2.7"
 install:
-    - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
-    - pip install -r requirements.txt
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
+  - pip install -r requirements.txt
 script: nosetests
 env:
   global:
-  - secure: VgCCQBXI1R86TuyE+0bbFOwncVnIfmvf9FnB3buOgiohHf8NBlwyHVeFDVmop3WzP8KM6udtSns3Krqf2gQNBhwpoA51Udm4nkIGUJSDgTiC6Co9aS6dIny+SYGDI1tGhj35drSsJHcKLJyMik8n3AqBVa7xcJpsSJPdLnVzuaA=
-  - secure: jMRXXlviUxskCbrOnCwaDXEG7pY6GwnPbYxe5pfj6bN2R4lrCtdddXK11uWDMl7zrwBo+CL+JuYgJy4uSDxN4qys/MnAbnmluhKHpMpgEOmWeJ20jbyjbi7onvYZNX42VKyP0j+efMdRhSlkjVF9nyZ7HS/kLF3ppFhujRKJWjI=
+    SAUCE_USERNAME=saucelabs-python
+    secure: "3LdxBHClyN5Cjeq9lZR2ybcCOonZEMzhzU1N56ASwrmi5eQ3FT9DTkp+BznbBmSO7YgtyHPWkp7l3zn8EcJnqQmXTLETFW7pqmePpjbLMVYeGkbcWRhNtytD+FeVcqaiHVYstK9rvCm36ryfc5Vn9yaLvlWcCCkuG3lN1Amnw0M="
 addons:
-  - sauce_connect: true
+  sauce_connect: true
