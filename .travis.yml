@@ -8,7 +8,7 @@ install:
 script: nosetests
 env:
   global:
-    - secure: "OdaZ5BwplspFxY3dbszZjc/KxwgU9pWNIFmOqv2StRHwJlwOPPIrVczFOmW5RAK5Qj54WuJYWVzSX2nLXottYVOPZcOQmvC/H4BYC4QRUoIgFLSaa7D1CeD/aM8JkKD3X78OMceI6DcQzkksugJR26jhiAXDMGocfb5ut8vL1D0="
-    - secure: "3LdxBHClyN5Cjeq9lZR2ybcCOonZEMzhzU1N56ASwrmi5eQ3FT9DTkp+BznbBmSO7YgtyHPWkp7l3zn8EcJnqQmXTLETFW7pqmePpjbLMVYeGkbcWRhNtytD+FeVcqaiHVYstK9rvCm36ryfc5Vn9yaLvlWcCCkuG3lN1Amnw0M="
+    - secure: "Qd3+pUa6pwn7C4NaeNH23PlLgUhO+qiist1MvB4BVNWWrZxZ2zTb/YCGdoffCjWSJsDr8laUegFjUZ4PwGOies3MlTGw5G2zXkYC8kX3QbJLZdPKbR31X9fuMenE/FkiDHKz+JSdYT/SM/c+6sVI6SIQ0i8CwZjo7sqwP8jjrMM="
+    - secure: "nZ5BpEUAcFY/C9eghAFAfl68ysnnCEu9jY9GQ8GvZIgm5vqOLgMzMeTKXLoK7aMusflFMoiWKZxh9qFX7BKd71QTbRYK0mEdRMkaK+4G2EeT9+cWJc/F7bMm+IE6vsHr1Uhl2Wd7GhWtAaqgSiO5Py1v/VjooeXeMrULHmMzAOU="
 addons:
   sauce_connect: true
