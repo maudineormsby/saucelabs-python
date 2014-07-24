@@ -8,7 +8,7 @@ install:
 script: nosetests
 env:
   global:
-    SAUCE_USERNAME=saucelabs-python
-    secure: "3LdxBHClyN5Cjeq9lZR2ybcCOonZEMzhzU1N56ASwrmi5eQ3FT9DTkp+BznbBmSO7YgtyHPWkp7l3zn8EcJnqQmXTLETFW7pqmePpjbLMVYeGkbcWRhNtytD+FeVcqaiHVYstK9rvCm36ryfc5Vn9yaLvlWcCCkuG3lN1Amnw0M="
+    - secure: "OdaZ5BwplspFxY3dbszZjc/KxwgU9pWNIFmOqv2StRHwJlwOPPIrVczFOmW5RAK5Qj54WuJYWVzSX2nLXottYVOPZcOQmvC/H4BYC4QRUoIgFLSaa7D1CeD/aM8JkKD3X78OMceI6DcQzkksugJR26jhiAXDMGocfb5ut8vL1D0="
+    - secure: "3LdxBHClyN5Cjeq9lZR2ybcCOonZEMzhzU1N56ASwrmi5eQ3FT9DTkp+BznbBmSO7YgtyHPWkp7l3zn8EcJnqQmXTLETFW7pqmePpjbLMVYeGkbcWRhNtytD+FeVcqaiHVYstK9rvCm36ryfc5Vn9yaLvlWcCCkuG3lN1Amnw0M="
 addons:
   sauce_connect: true
