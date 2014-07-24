@@ -23,4 +23,25 @@ sauce.browsers('webdriver')
 sauce.jobs.list_jobs(skip=10)
 ```
 
+Jobs
+----
+
+Each webdriver session has a corresponding job id in sauce. You can access
+the job/session id in the webdriver object:
+
+```
+wd = webdriver.Firefox()
+wd.session_id
+```
+
+Modify and inspect jobs and job status by using the jobs object:
+
+```
+sauce = Sauce(YOUR_SAUCE_USERNAME, YOUR_SAUCE_ACCESS_KEY)
+jobs = sauce.jobs
+jobs.get_job_details(wd.session_id)
+jobs.stop_job(wd.session_id)
+jobs.delete_job(wd.session_id)
+```
+
 Enjoy!
