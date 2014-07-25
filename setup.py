@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='saucelabs-python',
-    version='0.1',
+    version='0.2',
     description='REST Client for Saucelabs API',
     url='https://github.com/maudineormsby/saucelabs-python',
     author='Jason Carr',
