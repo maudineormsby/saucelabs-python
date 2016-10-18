@@ -2,8 +2,8 @@ import os
 
 import requests
 
-import jobs
-import tunnels
+from . import jobs
+from . import tunnels
 
 class Sauce(object):
 
