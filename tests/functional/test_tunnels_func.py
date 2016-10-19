@@ -3,9 +3,13 @@ try:
 except ImportError:
     import unittest
 
+import time
+
 from .helpers import sauce_helpers as helpers
 from .helpers.sauce_helpers import travis_only
 import sauce
+
+
 
 
 class TestTunnels(unittest.TestCase):
@@ -40,5 +44,5 @@ class TestTunnelsDelete(unittest.TestCase):
         tries = 0
         # this is terrible but tunnels take time to close
         while tuns[0] in self.sauce.tunnels.list_tunnels():
-            sleep(.5)
+            time.sleep(.5)
         self.assertNotIn(tuns[0], self.sauce.tunnels.list_tunnels())
