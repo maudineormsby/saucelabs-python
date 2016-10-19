@@ -142,8 +142,8 @@ class TestJobAssets(unittest.TestCase):
     def test_job_download_asset(self):
         helpers.wait_until_job_stopped(self.sauce, self.driver.session_id)
         with tempfile.TemporaryFile() as tmpfile:
-            tmpfile.write(self.sauce.jobs.download_job_asset(
-                self.session, 'selenium-server.log'))
+            tmpfile.write(bytes(self.sauce.jobs.download_job_asset(
+                self.session, 'selenium-server.log')))
             tmpfile.seek(0)
             self.assertIn('Launching a standalone Selenium Server', tmpfile.read(),
                           'File did not download properly.')
