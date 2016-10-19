@@ -4,7 +4,7 @@ python:
   - "2.7"
   - "3.4"
 install:
-  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2; fi
+  - if [[ $TRAVIS_PYTHON_VERSION == 2.6 ]]; then pip install unittest2 pyopenssl ndg-httpsclient pyasn1; fi
   - pip install -r requirements.txt
 script: nosetests
 env:
