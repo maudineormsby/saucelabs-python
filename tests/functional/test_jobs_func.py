@@ -145,7 +145,7 @@ class TestJobAssets(unittest.TestCase):
             tmpfile.write(bytes(self.sauce.jobs.download_job_asset(
                 self.session, 'selenium-server.log')))
             tmpfile.seek(0)
-            self.assertIn('Launching a standalone Selenium Server', tmpfile.read(),
+            self.assertIn(b'Launching a standalone Selenium Server', tmpfile.read(),
                           'File did not download properly.')
 
 
