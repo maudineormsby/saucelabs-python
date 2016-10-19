@@ -40,15 +40,22 @@ def travis_only(func):
         func(*args, **kwargs)
     return attr('travis_only')(run_test)
 
-def wait_until_stopped(sauce, session_id):
-        tries = 0
-        status = 'in progress'
-        while status == 'in progress' and tries < 10:
-            try:
-                stat = sauce.jobs.get_job_details(session_id)
-                status = stat['status']
-            except HTTPError as err:
-                if err.respnse.status_code == 404:
-                    continue
-                else:
-                    raise RuntimeError('Timed out waiting for sauce job to terminate.')
+
+def wait_until_job_stopped(sauce, session_id):
+    """
+    Wait for sauce to finish stopping a job.
+
+    This waits long enough for sauce to complete the operation but not long
+    enough that the job will time out.
+    """
+    tries = 0
+    status = 'in progress'
+    while status == 'in progress' and tries < 10:
+        try:
+            stat = sauce.jobs.get_job_details(session_id)
+            status = stat['status']
+        except HTTPError as err:
+            if err.respnse.status_code == 404:
+                continue
+            else:
+                raise RuntimeError('Timed out waiting for sauce job to terminate.')

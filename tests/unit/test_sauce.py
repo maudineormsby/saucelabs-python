@@ -18,12 +18,12 @@ class TestStorage(unittest.TestCase):
     @mock.patch.object(requests, 'post')
     def test_storage_upload(self, mock_req):
         test_file = 'file.txt'
-        with mock.patch('__builtin__.open', mock.mock_open(read_data='test'), create=True):
+        with mock.patch('sauce.sauce.open', mock.mock_open(read_data='test'), create=True) as m:
             self.sauce.upload_file(test_file, overwrite=True)
             mock_req.assert_called_with(
                 'https://sauce-user:sauce-key@saucelabs.com/storage/sauce-user/file.txt',
                 headers={'Content-Type': 'application/octet-stream'},
-                data=open(test_file)
+                data=m.return_value
             )
 
     @mock.patch.object(requests, 'request')

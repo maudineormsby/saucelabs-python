@@ -135,17 +135,17 @@ class TestJobAssets(unittest.TestCase):
         cls.sauce.jobs.stop_job(cls.session)
 
     def test_job_list_assets(self):
-        helpers.wait_until_stopped(self.sauce, self.driver.session_id)
+        helpers.wait_until_job_stopped(self.sauce, self.driver.session_id)
         resp = self.sauce.jobs.list_job_assets(self.session)
         self.assertIn('sauce-log', resp)
 
     def test_job_download_asset(self):
-        helpers.wait_until_stopped(self.sauce, self.driver.session_id)
+        helpers.wait_until_job_stopped(self.sauce, self.driver.session_id)
         with tempfile.TemporaryFile() as tmpfile:
-            tmpfile.write(self.sauce.jobs.download_job_asset(
-                self.session, 'selenium-server.log'))
+            tmpfile.write(bytes(self.sauce.jobs.download_job_asset(
+                self.session, 'selenium-server.log')))
             tmpfile.seek(0)
-            self.assertIn('org.openqa.grid.selenium.GridLauncher', tmpfile.read(),
+            self.assertIn(b'Launching a standalone Selenium Server', tmpfile.read(),
                           'File did not download properly.')
 
 
@@ -162,7 +162,7 @@ class TestJobAssetsDelete(unittest.TestCase):
 
 
     def test_job_assets_delete(self):
-        helpers.wait_until_stopped(self.sauce, self.driver.session_id)
+        helpers.wait_until_job_stopped(self.sauce, self.driver.session_id)
         self.sauce.jobs.delete_job_assets(self.driver.session_id)
         with self.assertRaises(HTTPError) as err_info:
             self.sauce.jobs.download_job_asset(self.driver.session_id,
@@ -181,13 +181,15 @@ class TestJobStopDelete(unittest.TestCase):
 
     def test_job_stop(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
-        helpers.wait_until_stopped(self.sauce, self.driver.session_id)
+        helpers.wait_until_job_stopped(self.sauce, self.driver.session_id)
+        # Normally we would check that the error was 'User Terminated but it takes a
+        # while for Sauce to update the error, so we will just check if the job is complete
         resp = self.sauce.jobs.get_job_details(self.driver.session_id)
-        assert resp['error'] == 'User terminated', 'Job not stopped: {0}'.format(resp)
+        assert resp['status'] == 'complete', 'Job not stopped: {0}'.format(resp)
 
     def test_job_delete(self):
         self.sauce.jobs.stop_job(self.driver.session_id)
-        helpers.wait_until_stopped(self.sauce, self.driver.session_id)
+        helpers.wait_until_job_stopped(self.sauce, self.driver.session_id)
         self.sauce.jobs.delete_job(self.driver.session_id)
         with self.assertRaises(HTTPError) as err_info:
             self.sauce.jobs.get_job_details(self.driver.session_id)
