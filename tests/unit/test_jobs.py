@@ -3,6 +3,7 @@ try:
 except ImportError:
     import unittest
 
+import json
 import mock
 
 import sauce
@@ -34,17 +35,19 @@ class TestJobs(unittest.TestCase):
             'GET', '/rest/v1/sauce-user/jobs/123')
 
     def test_update_job(self, mock_request):
-        self.sauce.jobs.update_job('123', build='456',
-                                   custom_data={'my-data': '789'},
-                                   name='test name', passed='False',
-                                   public='False', tags=['tag1', 'tag2'])
-        mock_request.assert_called_with('PUT',
-                                        '/rest/v1/sauce-user/jobs/123',
-                                        '{"name": "test name", '
-                                        '"tags": ["tag1", "tag2"], '
-                                        '"custom-data": {"my-data": "789"}, '
-                                        '"build": "456", "passed": "False", '
-                                        '"public": "False"}')
+        params = {u'build': u'456',
+                  u'custom_data': {u'my-data': u'789'},
+                  u'name': u'test name', 
+                  u'passed': u'False',
+                  u'public': u'False', 
+                  u'tags': [u'tag1', u'tag2']
+                  }
+        self.sauce.jobs.update_job('123', **params)
+        _, _, payload = mock_request.call_args[0]
+        args_dict = json.loads(payload)
+        # custom_data becomes custom-data
+        params[u'custom-data'] = params.pop(u'custom_data')
+        self.assertEqual(params, args_dict)
 
     def test_stop_job(self, mock_request):
         self.sauce.jobs.stop_job('123')
